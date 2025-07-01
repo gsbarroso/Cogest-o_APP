@@ -1,6 +1,11 @@
+// =================================================================
+// 1. PÁGINA DE LOGIN CORRIGIDA
+// Caminho: src/pages/Login/Login.jsx
+// =================================================================
+
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
-import { useAuth } from '../../hooks/useAuth'; // 1. Importa o hook
+import { Alert, KeyboardAvoidingView, Platform, ActivityIndicator, View } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
 
 import { Container, FormContainer, Title, SignUpContainer, SignUpText, SignUpLink } from './styles';
 import Header from '../../components/Header';
@@ -8,7 +13,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 export default function Login({ navigation }) {
-  const { login } = useAuth(); // 2. Pega a função de login do hook
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,22 +23,25 @@ export default function Login({ navigation }) {
       Alert.alert('Atenção', 'Por favor, preencha e-mail e senha.');
       return;
     }
-    setLoading(true);
-    const result = await login(email, senha); // 3. Usa a função de login
-    setLoading(false);
 
-    if (!result.success) {
-      Alert.alert('Erro no Login', result.error);
-    } else {
-      // A navegação será controlada pelo estado de autenticação agora,
-      // mas podemos manter o replace para uma transição imediata.
-      navigation.replace('Home');
+    setLoading(true);
+    try {
+      const result = await login(email, senha);
+      if (!result.success) {
+        Alert.alert('Erro no Login', result.error);
+      }
+      // Se o login for bem-sucedido, a navegação é automática.
+    } catch (error) {
+      // Captura erros inesperados da chamada
+      Alert.alert('Erro Crítico', 'Ocorreu um erro inesperado. Tente novamente.');
+    } finally {
+      // CORREÇÃO: O bloco 'finally' garante que o loading
+      // seja desativado, quer a operação tenha sucesso ou falhe.
+      setLoading(false);
     }
   };
 
-  const goToCadastro = () => {
-    navigation.navigate('Cadastro');
-  };
+  const goToCadastro = () => navigation.navigate('Cadastro');
 
   return (
     <Container>
@@ -57,12 +65,14 @@ export default function Login({ navigation }) {
             onChangeText={setSenha}
             isPassword={true}
           />
-          <Button onPress={handleLogin} disabled={loading}>
-            {loading ? <ActivityIndicator color="#000" /> : 'ENTRAR'}
-          </Button>
+          <View style={{ width: '100%', marginTop: 10 }}>
+            <Button onPress={handleLogin} disabled={loading}>
+              {loading ? <ActivityIndicator color="#000" /> : 'ENTRAR'}
+            </Button>
+          </View>
           <SignUpContainer onPress={goToCadastro}>
             <SignUpText>
-              Não possui conta? <SignUpLink>Faça seu cadastro aqui.</SignUpLink>
+              Não tem login? <SignUpLink>Faça seu cadastro aqui.</SignUpLink>
             </SignUpText>
           </SignUpContainer>
         </FormContainer>

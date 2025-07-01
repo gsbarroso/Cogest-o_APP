@@ -1,6 +1,11 @@
+// =================================================================
+// 2. PÁGINA DE CADASTRO CORRIGIDA
+// Caminho: src/pages/Cadastro/Cadastro.jsx
+// =================================================================
+
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
-import api from '../../services/api'; // Importa a API
+import { KeyboardAvoidingView, Platform, Alert, ActivityIndicator, View } from 'react-native';
+import { useUsers } from '../../hooks/useUsers';
 
 import {
   Container,
@@ -15,9 +20,10 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 export default function Cadastro({ navigation }) {
+  const { registerUser } = useUsers();
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [cargo, setCargo] = useState('Desenvolvedor'); // Valor padrão
+  const [cargo, setCargo] = useState('Desenvolvedor');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,41 +33,40 @@ export default function Cadastro({ navigation }) {
       Alert.alert('Atenção', 'Por favor, preencha todos os campos.');
       return;
     }
-
     if (senha !== confirmarSenha) {
       Alert.alert('Erro', 'As senhas não coincidem!');
       return;
     }
 
     setLoading(true);
-
     try {
-      await api.post('/users', { // A rota de criação de usuário é /users
+      const result = await registerUser({
         nome,
         email: email.toLowerCase(),
         cargo,
         senha,
-        nivel_acesso: false, // Padrão
+        nivel_acesso: cargo === 'Admin',
       });
 
-      Alert.alert('Sucesso!', 'Sua conta foi criada. Faça o login para continuar.');
-      navigation.navigate('Login');
-
+      if (result.success) {
+        Alert.alert('Sucesso!', 'A sua conta foi criada. Faça o login para continuar.');
+        navigation.navigate('Login');
+      } else {
+        Alert.alert('Erro no Cadastro', result.error);
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Não foi possível criar a conta.';
-      Alert.alert('Erro no Cadastro', errorMessage);
+      Alert.alert('Erro Crítico', 'Ocorreu um erro inesperado ao criar a conta.');
     } finally {
+      // CORREÇÃO: O bloco 'finally' garante que o loading é sempre desativado.
       setLoading(false);
     }
   };
 
-  const goToLogin = () => {
-    navigation.navigate('Login');
-  };
+  const goToLogin = () => navigation.navigate('Login');
 
   return (
     <Container>
-      <Header onPress={() => navigation.goBack()} showBackButton={true} />
+      <Header onPress={() => navigation.goBack()} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -74,9 +79,9 @@ export default function Cadastro({ navigation }) {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
-          {/* Aqui você poderia usar um Picker para o cargo, mas por simplicidade mantemos o Input */}
-          <Input placeholder="Cargo" value={cargo} onChangeText={setCargo} />
+          <Input placeholder="Cargo (Admin, Gerente, Desenvolvedor)" value={cargo} onChangeText={setCargo} />
           <Input
             placeholder="Senha"
             value={senha}
@@ -89,9 +94,11 @@ export default function Cadastro({ navigation }) {
             onChangeText={setConfirmarSenha}
             isPassword={true}
           />
-          <Button onPress={handleCreateAccount} disabled={loading}>
-            {loading ? <ActivityIndicator color="#000" /> : 'CRIAR CONTA'}
-          </Button>
+          <View style={{ width: '100%', marginTop: 10 }}>
+            <Button onPress={handleCreateAccount} disabled={loading}>
+              {loading ? <ActivityIndicator color="#000" /> : 'CRIAR CONTA'}
+            </Button>
+          </View>
           <SignInLinkContainer onPress={goToLogin}>
             <SignInText>
               Já tem uma conta? <SignInLink>Faça o login.</SignInLink>

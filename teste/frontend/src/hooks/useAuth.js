@@ -1,62 +1,43 @@
+// Caminho: src/hooks/useAuth.js
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
+import { loginRequest } from '../services/endpoints';
 
-// 1. Cria o Contexto
 const AuthContext = createContext({});
 
-// 2. Cria o Provedor (AuthProvider)
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Função para carregar os dados do usuário do AsyncStorage
+  // Este hook agora limpa a sessão ao iniciar a app.
   useEffect(() => {
-    async function loadStorageData() {
-      const storagedUser = await AsyncStorage.getItem('@user');
-      const storagedToken = await AsyncStorage.getItem('@token');
-
-      if (storagedUser && storagedToken) {
-        // Se temos um token, configuramos o header do Axios para futuras requisições
-        api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
-        setUser(JSON.parse(storagedUser));
-      }
+    async function clearSessionOnStartup() {
+      // CORREÇÃO: Limpa qualquer token ou utilizador guardado anteriormente.
+      // Isto garante que o estado 'signed' será sempre 'false' no arranque.
+      await AsyncStorage.clear();
       setLoading(false);
     }
-    loadStorageData();
+    clearSessionOnStartup();
   }, []);
 
-  // Função de Login
   const login = async (email, password) => {
     try {
-      const response = await api.post('/auth/login', {
-        email: email.toLowerCase(),
-        senha: password,
-      });
-
-      const { token, data } = response.data;
-      
+      const response = await loginRequest({ email, senha: password });
+      const { token, data } = response;
       setUser(data.user);
-
-      // Configura o header do Axios para todas as requisições autenticadas
       api.defaults.headers.Authorization = `Bearer ${token}`;
-
-      // Salva os dados no AsyncStorage
       await AsyncStorage.setItem('@user', JSON.stringify(data.user));
       await AsyncStorage.setItem('@token', token);
-
       return { success: true };
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Não foi possível fazer o login.';
-      return { success: false, error: errorMessage };
+      return { success: false, error: error.response?.data?.message || 'Erro no login.' };
     }
   };
 
-  // Função de Logout
   const logout = async () => {
-    // Limpa o AsyncStorage
     await AsyncStorage.clear();
-    // Reseta o estado do usuário
     setUser(null);
   };
 
@@ -67,13 +48,6 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-// 3. Cria o Hook (useAuth)
-function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider.');
-  }
-  return context;
+export function useAuth() {
+  return useContext(AuthContext);
 }
-
-export { AuthProvider, useAuth };
