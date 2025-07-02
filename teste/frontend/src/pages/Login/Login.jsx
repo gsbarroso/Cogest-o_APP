@@ -1,5 +1,5 @@
 // =================================================================
-// 1. PÁGINA DE LOGIN CORRIGIDA E MAIS ROBUSTA
+// 1. PÁGINA DE LOGIN CORRIGIDA COM DIAGNÓSTICO
 // Caminho: src/pages/Login/Login.jsx
 // =================================================================
 
@@ -25,25 +25,29 @@ export default function Login({ navigation }) {
     }
 
     setLoading(true);
+    console.log('[LOGIN] A tentar fazer login com:', email); // Log de diagnóstico
+
     try {
       const result = await login(email, senha);
       
-      // Se o login falhar, o hook já mostra um alerta.
-      // O estado de loading será desativado no 'finally'.
       if (!result.success) {
-        // Apenas para garantir que o loading pare aqui também em caso de falha controlada.
-        setLoading(false);
+        // O hook 'login' já mostra um alerta de erro vindo da API
+        console.log('[LOGIN] Falha controlada:', result.error);
       }
-      // Se o login for bem-sucedido, a navegação para a Home é automática
-      // porque o estado 'signed' no AuthProvider muda, e o nosso sistema de rotas reage a isso.
+      // Se o login for bem-sucedido, a navegação para a Home é automática.
 
     } catch (error) {
-      // Este catch é para erros inesperados que o hook não apanhou.
-      Alert.alert('Erro de Conexão', 'Não foi possível conectar ao servidor. Verifique a sua rede e o IP da API.');
+      // Este bloco apanha erros de rede (ex: IP errado, firewall)
+      console.error('[LOGIN] Erro de rede ou na chamada da API:', error);
+      Alert.alert(
+        'Erro de Conexão',
+        'Não foi possível comunicar com o servidor. Verifique a sua ligação à rede e o endereço de IP da API.'
+      );
+    } finally {
+      // Este bloco garante que o loading é sempre desativado
       setLoading(false);
+      console.log('[LOGIN] Processo de login finalizado.');
     }
-    // O 'finally' foi removido daqui para um controlo mais explícito do loading,
-    // garantindo que ele só para depois de todas as ações.
   };
 
   const goToCadastro = () => navigation.navigate('Cadastro');

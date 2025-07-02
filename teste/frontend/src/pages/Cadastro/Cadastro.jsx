@@ -1,15 +1,19 @@
+// =================================================================
+// 2. PÁGINA DE CADASTRO CORRIGIDA COM DIAGNÓSTICO
+// Caminho: src/pages/Cadastro/Cadastro.jsx
+// =================================================================
+
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Alert, ActivityIndicator, View } from 'react-native';
 import { useUsers } from '../../hooks/useUsers';
 
-// Importando os estilos corretos definidos em styles.js
 import {
   Container,
   FormContainer,
   Title,
-  SignInLinkContainer, // <-- Usado para o container do link
-  SignInText,         // <-- Usado para o texto normal
-  SignInLink          // <-- Usado para o texto clicável
+  SignInLinkContainer,
+  SignInText,
+  SignInLink
 } from './styles';
 import Header from '../../components/Header';
 import Input from '../../components/Input';
@@ -35,37 +39,33 @@ export default function Cadastro({ navigation }) {
     }
 
     setLoading(true);
-    console.log('[CADASTRO] A tentar criar conta...'); // Log para depuração
+    console.log('[CADASTRO] A tentar criar conta para:', email);
 
     try {
-      const userData = {
+      const result = await registerUser({
         nome,
         email: email.toLowerCase(),
         cargo,
         senha,
         nivel_acesso: cargo === 'Admin',
-      };
-
-      const result = await registerUser(userData);
+      });
 
       if (result.success) {
         Alert.alert('Sucesso!', 'A sua conta foi criada. Faça o login para continuar.');
         navigation.navigate('Login');
       } else {
-        // Erro controlado vindo do backend (ex: email já existe)
         Alert.alert('Erro no Cadastro', result.error);
       }
     } catch (error) {
-      // Erro de rede ou falha na comunicação com a API
-      console.error('[CADASTRO] Erro na chamada da API:', error); // Log detalhado do erro
+      // CORREÇÃO: Adicionando um log mais detalhado do erro de rede.
+      console.error('[CADASTRO] Erro crítico na chamada da API:', JSON.stringify(error));
       Alert.alert(
         'Erro de Conexão',
-        'Não foi possível comunicar com o servidor. Verifique se o seu servidor backend está a funcionar e se o IP no ficheiro da API está correto.'
+        'Não foi possível comunicar com o servidor. Verifique se o seu telemóvel e computador estão na mesma rede Wi-Fi e se o IP no ficheiro da API está correto.'
       );
     } finally {
-      // Este bloco garante que o loading é sempre desativado
-      console.log('[CADASTRO] Processo finalizado.'); // Log para depuração
       setLoading(false);
+      console.log('[CADASTRO] Processo de cadastro finalizado.');
     }
   };
 
@@ -106,13 +106,11 @@ export default function Cadastro({ navigation }) {
               {loading ? <ActivityIndicator color="#000" /> : 'CRIAR CONTA'}
             </Button>
           </View>
-          
           <SignInLinkContainer onPress={goToLogin}>
             <SignInText>
               Já tem uma conta? <SignInLink>Faça o login.</SignInLink>
             </SignInText>
           </SignInLinkContainer>
-
         </FormContainer>
       </KeyboardAvoidingView>
     </Container>
