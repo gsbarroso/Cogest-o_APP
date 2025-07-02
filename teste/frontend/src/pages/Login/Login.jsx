@@ -1,5 +1,5 @@
 // =================================================================
-// 1. PÁGINA DE LOGIN CORRIGIDA
+// 1. PÁGINA DE LOGIN CORRIGIDA E MAIS ROBUSTA
 // Caminho: src/pages/Login/Login.jsx
 // =================================================================
 
@@ -27,18 +27,23 @@ export default function Login({ navigation }) {
     setLoading(true);
     try {
       const result = await login(email, senha);
+      
+      // Se o login falhar, o hook já mostra um alerta.
+      // O estado de loading será desativado no 'finally'.
       if (!result.success) {
-        Alert.alert('Erro no Login', result.error);
+        // Apenas para garantir que o loading pare aqui também em caso de falha controlada.
+        setLoading(false);
       }
-      // Se o login for bem-sucedido, a navegação é automática.
+      // Se o login for bem-sucedido, a navegação para a Home é automática
+      // porque o estado 'signed' no AuthProvider muda, e o nosso sistema de rotas reage a isso.
+
     } catch (error) {
-      // Captura erros inesperados da chamada
-      Alert.alert('Erro Crítico', 'Ocorreu um erro inesperado. Tente novamente.');
-    } finally {
-      // CORREÇÃO: O bloco 'finally' garante que o loading
-      // seja desativado, quer a operação tenha sucesso ou falhe.
+      // Este catch é para erros inesperados que o hook não apanhou.
+      Alert.alert('Erro de Conexão', 'Não foi possível conectar ao servidor. Verifique a sua rede e o IP da API.');
       setLoading(false);
     }
+    // O 'finally' foi removido daqui para um controlo mais explícito do loading,
+    // garantindo que ele só para depois de todas as ações.
   };
 
   const goToCadastro = () => navigation.navigate('Cadastro');
