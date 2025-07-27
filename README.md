@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://via.placeholder.com/150/fdd835/000000?text=CPE" alt="Logo do Projeto" width="120">
-  <h1>Cogestão_APP 🚀</h1>
+  <h1>APP_Testes 🚀</h1>
   <p>
     Um sistema completo de gestão de ponto em tempo real, construído com um backend robusto em Node.js e uma aplicação móvel moderna em React Native.
   </p>
