@@ -1,8 +1,3 @@
-// =================================================================
-// 2. PÁGINA DE LOGIN CORRIGIDA
-// Caminho: src/pages/Login/Login.jsx
-// =================================================================
-
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ActivityIndicator, View } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
@@ -30,7 +25,6 @@ export default function Login({ navigation }) {
     try {
       const result = await login(email, senha);
       if (result.success) {
-        // CORREÇÃO: Acede a result.user.nome de forma segura
         showModal({
           title: 'Login Bem-Sucedido!',
           content: <MessageText>Bem-vindo(a) de volta, {result.user?.nome || ''}!</MessageText>,
@@ -47,6 +41,8 @@ export default function Login({ navigation }) {
   };
 
   const goToCadastro = () => navigation.navigate('Cadastro');
+  // Função para navegar para a tela de testes
+  const goToTestes = () => navigation.navigate('Testes');
 
   return (
     <Container>
@@ -61,6 +57,14 @@ export default function Login({ navigation }) {
               {loading ? <ActivityIndicator color="#000" /> : 'ENTRAR'}
             </Button>
           </View>
+
+          {/* Botão que leva para a página de testes */}
+          <View style={{ width: '100%', marginTop: 20 }}>
+            <Button onPress={goToTestes}>
+              PÁGINA DE TESTES
+            </Button>
+          </View>
+          
           <SignUpContainer onPress={goToCadastro}>
             <SignUpText>Não tem login? <SignUpLink>Faça seu cadastro aqui.</SignUpLink></SignUpText>
           </SignUpContainer>

@@ -6,24 +6,56 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Este app precisa de acesso à câmera para permitir que você tire fotos e selecione imagens de perfil.",
+        "NSPhotoLibraryUsageDescription": "Este app precisa de acesso à sua galeria para permitir que você selecione fotos.",
+        "NSContactsUsageDescription": "Este app precisa de acesso aos seus contatos para funcionalidades de integração.",
+        "NSLocationWhenInUseUsageDescription": "Este app precisa de acesso à sua localização para funcionalidades de geolocalização."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.READ_CONTACTS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que $(PRODUCT_NAME) aceda às suas fotos.",
+          "cameraPermission": "Permitir que $(PRODUCT_NAME) aceda à sua câmara."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Permitir que $(PRODUCT_NAME) use a sua localização."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Permitir que $(PRODUCT_NAME) aceda aos seus contatos."
+        }
+      ]
+    ]
   }
 }

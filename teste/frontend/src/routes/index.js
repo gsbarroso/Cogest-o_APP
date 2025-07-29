@@ -1,19 +1,15 @@
-// =================================================================
-// 2. ARQUIVO DE ROTAS CORRIGIDO COM IMPORTAÇÕES DIRETAS
-// Caminho: src/routes/index.js
-// =================================================================
-
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../hooks/useAuth';
 
-// CORREÇÃO DEFINITIVA: Importando cada página diretamente do seu ficheiro .jsx
 import Login from '../pages/Login/Login.jsx';
 import Cadastro from '../pages/Cadastro/Cadastro.jsx';
 import Home from '../pages/Home/Home.jsx';
 import Manager from '../pages/Manager/Manager.jsx';
+// Importa a nova página de testes
+import Testes from '../pages/Testes/Testes.jsx';
 
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
@@ -22,6 +18,8 @@ const AuthRoutes = () => (
   <AuthStack.Navigator screenOptions={{ headerShown: false }}>
     <AuthStack.Screen name="Login" component={Login} />
     <AuthStack.Screen name="Cadastro" component={Cadastro} />
+    {/* Adiciona a rota para a página de testes */}
+    <AuthStack.Screen name="Testes" component={Testes} />
   </AuthStack.Navigator>
 );
 
