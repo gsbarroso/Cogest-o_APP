@@ -32,8 +32,6 @@ export const ButtonContainer = styled.View`
   margin-top: 15px;
 `;
 
-// ... (estilos existentes: Container, FormContainer, etc.)
-
 export const SensorBox = styled.View`
   width: 100%;
   background-color: #1e1e1e;
@@ -46,5 +44,4 @@ export const SensorText = styled.Text`
   color: #fff;
   font-size: 16px;
   line-height: 24px;
-  font-family: monospace; /* Fonte monoespaçada para melhor alinhamento */
 `;
