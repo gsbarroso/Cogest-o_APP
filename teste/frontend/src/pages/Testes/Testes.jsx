@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView } from 'react-native';
 import { usePermissions } from '../../hooks/usePermissions';
 import { useModal } from '../../hooks/useModal';
 
@@ -17,6 +17,7 @@ export default function Testes({ navigation }) {
     requestContactsPermission,
     saveAndShareFile,
     selectFileFromDevice,
+    sendTestNotification,
     subscribeToAccelerometer,
     unsubscribeFromAccelerometer,
   } = usePermissions();
@@ -25,7 +26,6 @@ export default function Testes({ navigation }) {
   const [sensorSubscription, setSensorSubscription] = useState(null);
 
   useEffect(() => {
-    // Garante que o listener do sensor seja removido ao sair da página
     return () => sensorSubscription && unsubscribeFromAccelerometer(sensorSubscription);
   }, [sensorSubscription]);
 
@@ -63,15 +63,25 @@ export default function Testes({ navigation }) {
 
   const handleShareFile = async () => {
     const success = await saveAndShareFile();
-    if (!success) showModal({ title: 'Erro', content: <MessageText>Não foi possível compartilhar o arquivo.</MessageText> });
+    if (!success) showModal({ title: 'Erro', content: <MessageText>Não foi possível compartilhar o ficheiro.</MessageText> });
   };
 
   const handleSelectFile = async () => {
     const result = await selectFileFromDevice();
     showModal({
-      title: 'Seletor de Arquivos',
-      content: <MessageText>{result ? `Arquivo selecionado: ${result.name}` : 'Nenhum arquivo selecionado.'}</MessageText>
+      title: 'Seletor de Ficheiros',
+      content: <MessageText>{result ? `Ficheiro selecionado: ${result.name}` : 'Nenhum ficheiro selecionado.'}</MessageText>
     });
+  };
+
+  const handleNotification = async () => {
+    const success = await sendTestNotification();
+    if (success) {
+      showModal({
+        title: 'Notificação',
+        content: <MessageText>A notificação foi agendada! Deverá recebê-la em 2 segundos.</MessageText>
+      });
+    }
   };
 
   const handleSensor = () => {
@@ -90,16 +100,17 @@ export default function Testes({ navigation }) {
       <Header onPress={() => navigation.goBack()} />
       <ScrollView>
         <FormContainer>
-          <Title>Testes de Interação</Title>
+          <Title>Testes de Interação (Expo Go)</Title>
           <InfoText>Cada botão testa uma API nativa diferente.</InfoText>
           
-          <ButtonContainer><Button onPress={handleTakePicture}>Tirar Foto</Button></ButtonContainer>
-          <ButtonContainer><Button onPress={handleSelectImage}>Selecionar Imagem</Button></ButtonContainer>
-          <ButtonContainer><Button onPress={handleSelectFile}>Selecionar Arquivo</Button></ButtonContainer>
-          <ButtonContainer><Button onPress={handleShareFile}>Compartilhar</Button></ButtonContainer>
-          <ButtonContainer><Button onPress={handleLocation}>Compartilhar Localização</Button></ButtonContainer>
-          <ButtonContainer><Button onPress={handleContacts}>Permissão de Contatos</Button></ButtonContainer>
-          <ButtonContainer><Button onPress={handleSensor}>{sensorSubscription ? 'Parar Leitura do Sensor' : 'Ler Acelerômetro'}</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleNotification}>Enviar Notificação</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleTakePicture}>Tirar Foto (Câmera)</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleSelectImage}>Selecionar Imagem (Galeria)</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleSelectFile}>Selecionar Arquivo (Downloads)</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleShareFile}>Gerar e Salvar Aequivo</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleLocation}>Pedir Permissão de Localização</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleContacts}>Pedir Permissão de Contatos</Button></ButtonContainer>
+          <ButtonContainer><Button onPress={handleSensor}>{sensorSubscription ? 'Parar Leitura do Sensor' : 'Ler Acelerómetro'}</Button></ButtonContainer>
 
           {sensorData && (
             <SensorBox>

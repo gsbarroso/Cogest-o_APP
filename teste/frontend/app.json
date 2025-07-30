@@ -14,10 +14,10 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Este app precisa de acesso à câmera para permitir que você tire fotos e selecione imagens de perfil.",
+        "NSCameraUsageDescription": "Este app precisa de acesso à câmera para permitir que você tire fotos.",
+        "NSLocationWhenInUseUsageDescription": "Este app precisa de acesso à sua localização para funcionalidades de geolocalização.",
         "NSPhotoLibraryUsageDescription": "Este app precisa de acesso à sua galeria para permitir que você selecione fotos.",
-        "NSContactsUsageDescription": "Este app precisa de acesso aos seus contatos para funcionalidades de integração.",
-        "NSLocationWhenInUseUsageDescription": "Este app precisa de acesso à sua localização para funcionalidades de geolocalização."
+        "NSContactsUsageDescription": "Este app precisa de acesso aos seus contatos para funcionalidades de integração."
       }
     },
     "android": {
@@ -31,7 +31,11 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.READ_CONTACTS"
-      ]
+      ],
+      "notification": {
+        "icon": "./assets/icon.png",
+        "color": "#ffffff"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
