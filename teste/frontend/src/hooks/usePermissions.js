@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -8,7 +8,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Accelerometer } from 'expo-sensors';
 import * as Notifications from 'expo-notifications';
 
-// Configuração inicial para notificações (necessário para o iOS e para o app em primeiro plano)
+// Configuração inicial para notificações com a correção para o aviso de 'deprecated'
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -99,6 +99,28 @@ export const usePermissions = () => {
     });
     return true;
   };
+  
+  // --- CORREÇÃO FINAL APLICADA AQUI ---
+  const scheduleNotification = async (date) => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão Negada', 'Não é possível agendar notificações sem a sua permissão.');
+      return false;
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Lembrete Agendado 🗓️",
+        body: 'Este é um lembrete que você programou no CoGestão APP.',
+        data: { data: 'algum dado extra' },
+      },
+      // Voltamos à abordagem mais simples e direta, passando o objeto Date.
+      // Com os outros bugs corrigidos, esta deve ser a forma correta.
+      trigger: date,
+    });
+    return true;
+  };
+
 
   const subscribeToAccelerometer = (callback) => {
     Accelerometer.setUpdateInterval(1000);
@@ -118,6 +140,7 @@ export const usePermissions = () => {
     saveAndShareFile,
     selectFileFromDevice,
     sendTestNotification,
+    scheduleNotification,
     subscribeToAccelerometer,
     unsubscribeFromAccelerometer,
   };
