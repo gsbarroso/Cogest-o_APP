@@ -1,0 +1,24 @@
+@echo off
+"C:\\Users\\gusta\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\cmake.exe" ^
+  "-HC:\\CPEjr\\Cogestao_APP\\teste\\frontend\\node_modules\\react-native\\ReactAndroid\\cmake-utils\\default-app-setup" ^
+  "-DCMAKE_SYSTEM_NAME=Android" ^
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" ^
+  "-DCMAKE_SYSTEM_VERSION=24" ^
+  "-DANDROID_PLATFORM=android-24" ^
+  "-DANDROID_ABI=x86_64" ^
+  "-DCMAKE_ANDROID_ARCH_ABI=x86_64" ^
+  "-DANDROID_NDK=C:\\Users\\gusta\\AppData\\Local\\Android\\Sdk\\ndk\\27.1.12297006" ^
+  "-DCMAKE_ANDROID_NDK=C:\\Users\\gusta\\AppData\\Local\\Android\\Sdk\\ndk\\27.1.12297006" ^
+  "-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\gusta\\AppData\\Local\\Android\\Sdk\\ndk\\27.1.12297006\\build\\cmake\\android.toolchain.cmake" ^
+  "-DCMAKE_MAKE_PROGRAM=C:\\Users\\gusta\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe" ^
+  "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\\CPEjr\\Cogestao_APP\\teste\\frontend\\android\\app\\build\\intermediates\\cxx\\Debug\\6b1b2r3f\\obj\\x86_64" ^
+  "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=C:\\CPEjr\\Cogestao_APP\\teste\\frontend\\android\\app\\build\\intermediates\\cxx\\Debug\\6b1b2r3f\\obj\\x86_64" ^
+  "-DCMAKE_BUILD_TYPE=Debug" ^
+  "-DCMAKE_FIND_ROOT_PATH=C:\\CPEjr\\Cogestao_APP\\teste\\frontend\\android\\app\\.cxx\\Debug\\6b1b2r3f\\prefab\\x86_64\\prefab" ^
+  "-BC:\\CPEjr\\Cogestao_APP\\teste\\frontend\\android\\app\\.cxx\\Debug\\6b1b2r3f\\x86_64" ^
+  -GNinja ^
+  "-DPROJECT_BUILD_DIR=C:\\CPEjr\\Cogestao_APP\\teste\\frontend\\android\\app\\build" ^
+  "-DPROJECT_ROOT_DIR=C:\\CPEjr\\Cogestao_APP\\teste\\frontend\\android" ^
+  "-DREACT_ANDROID_DIR=C:\\CPEjr\\Cogestao_APP\\teste\\frontend\\node_modules\\react-native\\ReactAndroid" ^
+  "-DANDROID_STL=c++_shared" ^
+  "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
